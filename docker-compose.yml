@@ -6,7 +6,9 @@ services:
     image: mongo
     restart: always
     ports:
-      - 27017:27017
+      - 27018:27017
+    env_file:
+      - .env
     volumes:
       - ./data:/data/db
 
@@ -16,5 +18,8 @@ services:
     restart: always
     ports:
       - "80:3000"
-    environment:
-      MONGO_URL: mongodb://mongo:27017/invoicing-app
+    env_file:
+      - .env
+    volumes:
+      - /node_modules
+    
