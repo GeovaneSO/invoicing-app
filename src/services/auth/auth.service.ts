@@ -23,8 +23,8 @@ export class AuthService {
         { email: payload.email },
         {
           secret: process.env.SECRET_KEY,
-          expiresIn: '24',
-          subject: payload.id,
+          expiresIn: '24h',
+          subject: payload.sub,
         },
       ),
     };
@@ -38,7 +38,7 @@ export class AuthService {
   async session(data: AuthRequestDto): Promise<object> {
     const user = await this.usersServices.findByEmail(data.email);
 
-    return this.generateJwt({ email: user.email, id: user.id });
+    return this.generateJwt({ email: user.email, sub: user.id });
   }
 
   async googleSession(user: CreateUserDto): Promise<{
@@ -57,8 +57,8 @@ export class AuthService {
         password: generateFromEmail(user.email, 5),
       });
 
-      return this.generateJwt({ email: newUser.email, id: newUser.id });
+      return this.generateJwt({ email: newUser.email, sub: newUser.id });
     }
-    return this.generateJwt({ email: userExists.email, id: userExists.id });
+    return this.generateJwt({ email: userExists.email, sub: userExists.id });
   }
 }

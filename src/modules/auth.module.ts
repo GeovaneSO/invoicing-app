@@ -5,11 +5,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import * as Joi from 'joi';
 import { AuthController } from 'src/controllers/auth/auth.controller';
-import { EmailExistsMiddleware } from 'src/middlewares/users/emailExists.middleware';
 import { EmailVerifyMiddleware } from 'src/middlewares/users/emailVerify.middleware';
 import { PasswordVerifyMiddleware } from 'src/middlewares/users/passwordVerify.middleware';
 import { User, UserSchema } from 'src/schemas/user.schema';
 import { AuthService } from 'src/services/auth/auth.service';
+import { EmailService } from 'src/services/emails/email.service';
 import { UsersService } from 'src/services/users/users.service';
 import { GoogleStrategy } from 'src/strategies/google.strategy';
 
@@ -27,7 +27,7 @@ import { GoogleStrategy } from 'src/strategies/google.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, UsersService],
+  providers: [AuthService, GoogleStrategy, EmailService, UsersService],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

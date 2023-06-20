@@ -17,7 +17,6 @@ export class PasswordVerifyMiddleware implements NestMiddleware {
     const user = await this.usersServices.findByEmail(email);
 
     const passwordHashed = await bcryptjs.compare(password, user.password);
-    console.log(user);
 
     if (!passwordHashed) {
       throw new UnauthorizedException('Invalid email or password');

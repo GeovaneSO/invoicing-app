@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, isString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 import { Types } from 'mongoose';
 import { User } from 'src/schemas/user.schema';
 
@@ -6,6 +6,17 @@ export class CreateUserDto {
   readonly name: string;
   readonly email: string;
   readonly password: string;
+}
+
+export class RecoverPassDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}
+
+export class UserRecoveryPasswordDto {
+  password: string;
+  pin: number;
 }
 
 export class UpdateUserDto {

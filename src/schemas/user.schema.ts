@@ -16,6 +16,12 @@ export class User {
   @Prop({ required: true })
   password: string;
 
+  @Prop({ default: () => uuidV4(), unique: true })
+  confirmationToken: string;
+
+  @Prop()
+  pin: string | null;
+
   // toJSON() {
   //   const { _id, __v, password, ...userObject } = this.toObject();
   //   return userObject;

@@ -4,18 +4,22 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
+  Patch,
   Post,
   Put,
-  Request,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   CreateUserDto,
+  RecoverPassDto,
   UpdateUserDto,
   UserListResponseDto,
+  UserRecoveryPasswordDto,
   UserResponseDto,
 } from 'src/dtos/user.dto';
 import { UsersService } from 'src/services/users/users.service';
@@ -26,8 +30,11 @@ export class UsersController {
 
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
-  public async create(@Body() data: CreateUserDto): Promise<UserResponseDto> {
-    return await this.usersServices.createUser(data);
+  public async create(@Body() data: CreateUserDto): Promise<object> {
+    await this.usersServices.createUser(data);
+    return {
+      message: 'Cadastro realizado com sucesso',
+    };
   }
 
   @Get()
@@ -37,13 +44,25 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  public async getOne(
-    @Param('id') id: string,
-    @Request() req,
-  ): Promise<UserResponseDto> {
-    console.log(req.user);
-
+  public async getOne(@Param('id') id: string): Promise<UserResponseDto> {
     return await this.usersServices.findById(id);
+  }
+
+  @Patch('')
+  async confirmEmailWithToken(@Query('token') token: string): Promise<object> {
+    return await this.usersServices.confirmEmailWithToken(token);
+  }
+
+  @Post('/send-email-recover')
+  @HttpCode(200)
+  async sendEmailRecover(@Body() data: RecoverPassDto): Promise<object> {
+    return await this.usersServices.sendEmailRecoverPassword(data);
+  }
+
+  @Patch('/recover')
+  @HttpCode(200)
+  async recoverPass(@Body() data: UserRecoveryPasswordDto): Promise<object> {
+    return await this.usersServices.recoverPass(data);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -51,15 +70,13 @@ export class UsersController {
   public async update(
     @Body() data: UpdateUserDto,
     @Param('id') id: string,
-    @Request() req,
   ): Promise<UserResponseDto> {
-    console.log(req.user);
-
     return await this.usersServices.updateUser(id, data);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
+  @HttpCode(200)
   public async delete(@Param('id') id: string): Promise<object> {
     return await this.usersServices.deleteUser(id);
   }
